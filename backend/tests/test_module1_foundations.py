@@ -1,7 +1,7 @@
 import asyncio
 import unicodedata
 from collections.abc import Iterator
-from dataclassed import FrozenInstanceError
+from dataclasses import FrozenInstanceError
 
 import pytest
 from pydantic import ValidationError
@@ -80,7 +80,7 @@ def test_generic_paginated_response_and_computed_field():
     
     dumped = page.model_dump()
     assert dumped["has_next"] is True
-    assert dumped["items"][0]["word_cound"] == 5
+    assert dumped["items"][0]["word_count"] == 5
     
     
 # 3. Test Dataclass immutable
@@ -98,9 +98,9 @@ def test_text_chunk_is_immutable():
 @pytest.mark.parametrize(
     ("raw_text", "expected"),
     [
-        ("  Xin    chào\t\tViệt Nam  ", "Xin chào Việt Nam")
-        ("Dòng 1\r\n\r\n\r\n\r\nDòng 2", "Dòng 1\n\nDòng 2")
-        ("   \n\t  ", "")
+        ("  Xin    chào\t\tViệt Nam  ", "Xin chào Việt Nam"),
+        ("Dòng 1\r\n\r\n\r\n\r\nDòng 2", "Dòng 1\n\nDòng 2"),
+        ("   \n\t  ", ""),
     ]
 )
 def test_normalize_text(raw_text: str, expected: str):
@@ -108,8 +108,8 @@ def test_normalize_text(raw_text: str, expected: str):
     
 
 # 5. Test Generator (yield)
-def test_iter_text_chunks_is_lazy_generator(sample_doc: str):
-    gen = iter_text_chunk(
+def test_iter_text_chunks_is_lazy_generator(sample_document: str):
+    gen = iter_text_chunks(
         sample_document,
         chunk_size=60,
         chunk_overlap=15,
@@ -127,9 +127,9 @@ def test_iter_text_chunks_is_lazy_generator(sample_doc: str):
 # 6. Test Async helpers (Context Manager, Semaphore + TaskGroup, AsyncIterator)
 def test_async_helpers_workflow():
     async def _run() -> None:
-        asyn with track_execution_time("mock_llm_call") as timer:
+        async with track_execution_time("mock_llm_call") as timer:
             await asyncio.sleep(0.01)
-        assert timer.operator == "mock_llm_call"
+        assert timer.operation == "mock_llm_call"
         assert timer.elapsed_ms >= 5.0
         
         active_workers = 0
