@@ -8,11 +8,11 @@ from dataclasses import dataclass
 @dataclass(slots=True)
 class TimingResult:
     """Store execution time of an async block for logging/observability."""
-    
+
     operation: str
     elapsed_ms: float = 0.0
-    
-    
+
+
 @asynccontextmanager
 async def track_execution_time(operation: str) -> AsyncIterator[TimingResult]:
     """Async context manager to measure latency of LLM or vector DB calls."""
@@ -22,9 +22,9 @@ async def track_execution_time(operation: str) -> AsyncIterator[TimingResult]:
         yield result
     finally:
         result.elapsed_ms = round((time.perf_counter() - start) * 1000, 2)
-        
 
-async def run_with_concurrency[T, R] (
+
+async def run_with_concurrency[T, R](
     items: list[T],
     worker: Callable[[T], Awaitable[R]],
     max_concurrency: int = 5,
@@ -34,16 +34,16 @@ async def run_with_concurrency[T, R] (
         raise ValueError("max_concurrency must be greater than 0")
     if not items:
         return []
-    
+
     semaphore = asyncio.Semaphore(max_concurrency)
-    
+
     async def _bounded_worker(item: T) -> R:
         async with semaphore:
             return await worker(item)
-        
+
     async with asyncio.TaskGroup() as tg:
         tasks = [tg.create_task(_bounded_worker(item)) for item in items]
-        
+
     return [t.result() for t in tasks]
 
 
@@ -55,4 +55,3 @@ async def simulate_token_stream(text: str, delay_seconds: float = 0.0) -> AsyncI
             await asyncio.sleep(delay_seconds)
         suffix = " " if i < len(words) - 1 else ""
         yield f"{word}{suffix}"
-        

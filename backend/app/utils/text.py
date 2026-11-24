@@ -30,15 +30,15 @@ def iter_text_chunks(
         raise ValueError("chunk_size must be greater than 0")
     if chunk_overlap < 0 or chunk_overlap >= chunk_size:
         raise ValueError("chunk_overlap must be >= 0 and less than chunk_size")
-    
+
     cleaned = normalize_text(text)
     if not cleaned:
         return
-    
+
     step = chunk_size - chunk_overlap
     text_len = len(cleaned)
     chunk_idx = 0
-    
+
     for start in range(0, text_len, step):
         end = min(start + chunk_size, text_len)
         slice_text = cleaned[start:end].strip()

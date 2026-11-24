@@ -4,6 +4,16 @@ from app.schemas.document import (
     DocumentCreateRequest,
     DocumentReadResponse,
 )
+from app.schemas.user import (
+    UserRegisterRequest,
+    UserLoginRequest,
+    TokenResponse,
+    UserResponse,
+)
+from app.schemas.workspace import (
+    WorkspaceCreateRequest,
+    WorkspaceResponse,
+)
 from app.schemas.pagination import PaginatedResponse
 
 __all__ = [
@@ -13,4 +23,10 @@ __all__ = [
     "MetadataDict",
     "PaginatedResponse",
     "TextChunk",
+    "UserRegisterRequest",
+    "UserLoginRequest",
+    "TokenResponse",
+    "UserResponse",
+    "WorkspaceCreateRequest",
+    "WorkspaceResponse",
 ]
