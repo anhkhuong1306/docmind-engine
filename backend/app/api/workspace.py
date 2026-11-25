@@ -9,6 +9,7 @@ from app.schemas.workspace import WorkspaceCreateRequest, WorkspaceResponse
 
 router = APIRouter(prefix="/workspaces", tags=["workspaces"])
 
+
 @router.post("", response_model=WorkspaceResponse, status_code=status.HTTP_201_CREATED)
 async def create_workspace(
     payload: WorkspaceCreateRequest,
@@ -16,7 +17,7 @@ async def create_workspace(
     db: DBSession,
 ) -> Workspace:
     """Create a new workspace and assign the current user as the owner."""
-    
+
     existing = await db.execute(select(Workspace).where(Workspace.slug == payload.slug))
     if existing.scalar_one_or_none() is not None:
         raise AppError(
@@ -24,7 +25,7 @@ async def create_workspace(
             code="WORKSPACE_SLUG_EXISTS",
             message=f"Workspace with slug '{payload.slug}' already exists.",
         )
-        
+
     workspace = Workspace(
         name=payload.name,
         slug=payload.slug,
@@ -32,16 +33,13 @@ async def create_workspace(
     )
     db.add(workspace)
     await db.flush()
-    
-    member = WorkspaceMember(
-        workspace_id=workspace.id,
-        user_id=current_user.id,
-        role="owner"
-    )
+
+    member = WorkspaceMember(workspace_id=workspace.id, user_id=current_user.id, role="owner")
     db.add(member)
     await db.commit()
     await db.refresh(workspace)
     return workspace
+
 
 @router.get("", response_model=list[WorkspaceResponse])
 async def list_my_workspace(
@@ -49,7 +47,7 @@ async def list_my_workspace(
     db: DBSession,
 ) -> list[Workspace]:
     """List the workspaces owned by the current user."""
-    
+
     stmt = (
         select(Workspace)
         .join(WorkspaceMember, WorkspaceMember.workspace_id == Workspace.id)

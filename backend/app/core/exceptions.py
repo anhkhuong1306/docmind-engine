@@ -1,18 +1,20 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
+
 class AppError(Exception):
     """Exception raised for application-specific errors."""
-    
+
     def __init__(self, status_code: int, code: str, message: str) -> None:
         self.status_code = status_code
         self.code = code
         self.message = message
         super().__init__(message)
-        
+
+
 def register_exception_handlers(app: FastAPI) -> None:
     """Register Global Exception Handlers"""
-    
+
     @app.exception_handler(AppError)
     async def app_error_handler(_request: Request, exc: AppError) -> JSONResponse:
         return JSONResponse(
@@ -22,5 +24,5 @@ def register_exception_handlers(app: FastAPI) -> None:
                     "code": exc.code,
                     "message": exc.message,
                 }
-            }
+            },
         )

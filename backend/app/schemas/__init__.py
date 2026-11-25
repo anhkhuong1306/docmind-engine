@@ -4,17 +4,17 @@ from app.schemas.document import (
     DocumentCreateRequest,
     DocumentReadResponse,
 )
+from app.schemas.pagination import PaginatedResponse
 from app.schemas.user import (
-    UserRegisterRequest,
-    UserLoginRequest,
     TokenResponse,
+    UserLoginRequest,
+    UserRegisterRequest,
     UserResponse,
 )
 from app.schemas.workspace import (
     WorkspaceCreateRequest,
     WorkspaceResponse,
 )
-from app.schemas.pagination import PaginatedResponse
 
 __all__ = [
     "DocSourceType",

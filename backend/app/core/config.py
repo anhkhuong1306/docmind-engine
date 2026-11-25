@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     llm_provider: str = "gemini"
     llm_model: str = "gemini-2.5-flash"
     gemini_api_key: str = ""
-    
+
     # jwt Auth
     jwt_secret_key: str = "dev-secret-key-change-in-production-at-least-32-characters"
     jwt_algorithm: str = "HS256"
